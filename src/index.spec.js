@@ -6,7 +6,7 @@ import expect from 'expect';
 import { reduxForm } from 'redux-form';
 import { createStore } from 'redux';
 
-import FormInspector from './index';
+import formInspector from './index';
 
 const createFakeContextWithForm = (form = {}) => ({
     context: {
@@ -16,11 +16,18 @@ const createFakeContextWithForm = (form = {}) => ({
     },
 });
 
-describe('FormInspector', () => {
+describe('formInspector', () => {
+    it('should throw an error if no form name is provided in the configuration object', () => {
+        expect(() => {
+            formInspector({});
+        }).toThrow('You must provide a form identifier in the "form" configuration key.');
+    });
+
     it('should map empty object to "inspection" prop key if form does not exist', () => {
-        const InspectedComponent = FormInspector(
-            { myProp: () => 'Hello' },
-        )(({ inspection }) => (
+        const InspectedComponent = formInspector({
+            form: 'myForm',
+            rules: { myProp: () => 'Hello' },
+        })(({ inspection }) => (
             <div {...inspection.customProps} />
         ));
 
@@ -29,14 +36,14 @@ describe('FormInspector', () => {
             createFakeContextWithForm(),
         );
 
-        expect(wrapper.props().inspection).toEqual({ myProp: {} });
+        expect(wrapper.prop('inspection')).toEqual({ myProp: {} });
     });
 
     it('should map data to "inspection" prop key if form exist', () => {
-        const InspectedComponent = FormInspector(
-            { myProp: () => 'Hello' },
-            'myForm',
-        )(reduxForm({
+        const InspectedComponent = formInspector({
+            rules: { myProp: () => 'Hello' },
+            form: 'myForm',
+        })(reduxForm({
             form: 'myForm',
         })(({ inspection }) => (
             <div {...inspection.customProps} />
@@ -51,16 +58,39 @@ describe('FormInspector', () => {
             }),
         );
 
-        expect(wrapper.props().inspection).toEqual({ myProp: 'Hello' });
+        expect(wrapper.prop('inspection')).toEqual({ myProp: 'Hello' });
+    });
+
+    it('should map data to custom "inspectorKey" prop key if provided', () => {
+        const InspectedComponent = formInspector({
+            rules: { myProp: () => 'Hello' },
+            form: 'myForm',
+            inspectorKey: 'inspect',
+        })(reduxForm({
+            form: 'myForm',
+        })(({ inspect }) => (
+            <div {...inspect.customProps} />
+        )));
+
+        const wrapper = shallow(
+            <InspectedComponent />,
+            createFakeContextWithForm({
+                myForm: {
+                    values: {},
+                },
+            }),
+        );
+
+        expect(wrapper.prop('inspect')).toEqual({ myProp: 'Hello' });
     });
 
     it('should access form fields values from inspector callback', () => {
         const inspectorSpy = expect.createSpy();
 
-        const InspectedComponent = FormInspector(
-            { myProp: inspectorSpy },
-            'myForm',
-        )(reduxForm({
+        const InspectedComponent = formInspector({
+            rules: { myProp: inspectorSpy },
+            form: 'myForm',
+        })(reduxForm({
             form: 'myForm',
         })(({ inspection }) => (
             <div {...inspection.customProps} />

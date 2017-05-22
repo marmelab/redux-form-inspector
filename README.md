@@ -42,14 +42,9 @@ export default reduxForm({ form: 'hello' })(HelloForm);
 
 ```js
 import React from 'react';
-import formInspector from 'redux-form-inspector';
 import { compose } from 'recompose';
 import { Field, reduxForm } from 'redux-form';
-
-export const helloFormRules = {
-    bgColor: ({ message }) ? message.indexOf('hello') === -1 ? 'red' : 'blue',
-    countChar: ({ message }) => message.length,
-};
+import formInspector from 'redux-form-inspector';
 
 export const HelloForm = ({ handleSubmit, inspect }) => (
   <form onSubmit={handleSubmit} style={{ background: inspect.bgColor }}>
@@ -59,21 +54,35 @@ export const HelloForm = ({ handleSubmit, inspect }) => (
   </form>
 );
 
+export const helloFormRules = {
+    bgColor: ({ message }) ? message.indexOf('hello') === -1 ? 'red' : 'blue',
+    countChar: ({ message }) => message.length,
+};
+
 export default compose(
     reduxForm({ form: 'hello' }),
-    formInspector(helloFormRules, 'hello', 'inspect'),
+    formInspector({ rules: helloFormRules, form: 'hello', inspectorKey: 'inspect' }),
 )(HelloForm);
 ```
 
 ## API
 
-The `formInspector` function take 3 arguments as input in the following way. In result of this call, it return a new HOC which can be used on any component (not even form).
+The `formInspector` function take a configuration object of the following form as input. In result of this call, it return a new HOC which can be used on any component (not even form).
 
 ```js
-const myCustomFormInspector = formInspector(rules, formName [, inspectorKeyName]);
+const myInspectorRules = {
+    mySubprop: myCallback,
+    ...
+};
+
+const myCustomFormInspector = formInspector({
+    form: 'myForm', // The redux-form instance identifier
+    rules: myInspectorRules, // An empty object by default
+    inspectorKey: 'myInspectorPropKey' // "inspection" by default
+});
 ```
 
-#### Rules
+#### rules
 
 Rules are the most important part of `redux-form-inspector`. They are defined with a simple object with a prop name as key and a callback as value.
 
@@ -81,13 +90,13 @@ At runtime, each callback are executed with the form field values as arguments a
 
 The strength of the rules lies in fact they can be easily tested.
 
-#### FormName
+#### form
 
 The form name must be the same as the name you have passed to the [reduxForm](http://redux-form.com/6.7.0/docs/api/ReduxForm.md/) on the form that you're inspect. In the previous example, the form name was `hello`.
 
-#### InspectorKeyName [optionnal]
+#### inspectorKey [optionnal]
 
-This args let you assign a custom name to the inspector result object which is passed as prop to your inspected component.
+This attribute let you assign a custom name to the inspector result object which is passed as prop to your inspected component.
 
 If not specified, `formInspector` will use `inspection` as name for this prop.
 
