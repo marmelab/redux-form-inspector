@@ -42,11 +42,11 @@ export default reduxForm({ form: 'hello' })(HelloForm);
 
 ```js
 import React from 'react';
-import FormInspector from 'redux-form-inspector';
+import formInspector from 'redux-form-inspector';
 import { compose } from 'recompose';
 import { Field, reduxForm } from 'redux-form';
 
-export const HelloFormRules = {
+export const helloFormRules = {
     bgColor: ({ message }) ? message.indexOf('hello') === -1 ? 'red' : 'blue',
     countChar: ({ message }) => message.length,
 };
@@ -61,16 +61,16 @@ export const HelloForm = ({ handleSubmit, inspect }) => (
 
 export default compose(
     reduxForm({ form: 'hello' }),
-    FormInspector(HelloFormRules, 'hello', 'inspect'),
+    formInspector(helloFormRules, 'hello', 'inspect'),
 )(HelloForm);
 ```
 
 ## API
 
-The `FormInspector` function take 3 arguments as input in the following way. In result of this call, it return a new HOC which can be used on any component (not even form).
+The `formInspector` function take 3 arguments as input in the following way. In result of this call, it return a new HOC which can be used on any component (not even form).
 
 ```js
-const myCustomFormInspector = FormInspector(rules, formName [, inspectorKeyName]);
+const myCustomFormInspector = formInspector(rules, formName [, inspectorKeyName]);
 ```
 
 #### Rules
@@ -89,7 +89,7 @@ The form name must be the same as the name you have passed to the [reduxForm](ht
 
 This args let you assign a custom name to the inspector result object which is passed as prop to your inspected component.
 
-If not specified, `FormInspector` will use `inspection` as name for this prop.
+If not specified, `formInspector` will use `inspection` as name for this prop.
 
 ## Contributing
 
