@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { getFormValues } from 'redux-form';
 
-export default ({ form, rules = {}, inspectorKey = 'inspection' }) => {
+export default ({ form, fieldsToProps = {}, inspectorKey }) => {
     if (!form) {
         throw new Error('You must provide a form identifier in the "form" configuration key.');
     }
@@ -10,12 +10,12 @@ export default ({ form, rules = {}, inspectorKey = 'inspection' }) => {
         connect((state) => {
             const fieldValues = getFormValues(form)(state);
 
-            const inspection = Object.keys(rules).reduce((r, rule) => ({
+            const inspection = Object.keys(fieldsToProps).reduce((r, prop) => ({
                 ...r,
-                [rule]: fieldValues ? rules[rule](fieldValues) : {},
+                [prop]: fieldValues ? fieldsToProps[prop](fieldValues) : null,
             }), {});
 
-            return { [inspectorKey]: inspection };
+            return !inspectorKey ? inspection : { [inspectorKey]: inspection };
         }, () => ({}))(BaseComponent)
     );
 

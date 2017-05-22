@@ -38,7 +38,7 @@ export const HelloForm = ({ handleSubmit }) => (
 export default reduxForm({ form: 'hello' })(HelloForm);
 ```
 
-`redux-form-inspector` let you add some `dynamic props` to you component (wrapped by your HOC) who are based on the values of any registred form of your application. For example, you can disable fields, change the background color of your form, ... the sky's the limit.
+`redux-form-inspector` let you add some `dynamic props` to you component (wrapped by your HOC) who are based on the values `of any registred form` of your application. For example, you can disable fields, change the background color of your form, ... the sky is the limit.
 
 ```js
 import React from 'react';
@@ -46,22 +46,23 @@ import { compose } from 'recompose';
 import { Field, reduxForm } from 'redux-form';
 import formInspector from 'redux-form-inspector';
 
-export const HelloForm = ({ handleSubmit, inspect }) => (
-  <form onSubmit={handleSubmit} style={{ background: inspect.bgColor }}>
-    <span>{{ inspect.countChar }} characters</span>
+export const HelloForm = ({ handleSubmit, backgroundColor, showSecret }) => (
+  <form onSubmit={handleSubmit} style={{ backgroundColor }}>
+    {showSecret && <span>Hello John</span>}
+    <Field name="email" component="input" type="text"/>
     <Field name="message" component="input" type="text"/>
     <button type="submit">Submit</button>
   </form>
 );
 
-export const helloFormRules = {
-    bgColor: ({ message }) ? message.indexOf('hello') === -1 ? 'red' : 'blue',
-    countChar: ({ message }) => message.length,
+export const fieldsToProps = {
+    backgroundColor: ({ message }) ? message.includes('hello') ? 'red' : 'blue',
+    showSecret: ({ message, email }) => message.length > 0 && email === 'john@doe.com'
 };
 
 export default compose(
     reduxForm({ form: 'hello' }),
-    formInspector({ rules: helloFormRules, form: 'hello', inspectorKey: 'inspect' }),
+    formInspector({ form: 'hello', fieldsToProps }),
 )(HelloForm);
 ```
 
@@ -70,35 +71,35 @@ export default compose(
 The `formInspector` function take a configuration object of the following form as input. In result of this call, it return a new HOC which can be used on any component (not even form).
 
 ```js
-const myInspectorRules = {
-    mySubprop: myCallback,
+const fieldsToProps = {
+    mySubprop: (fields) => { ... },
     ...
 };
 
 const myCustomFormInspector = formInspector({
     form: 'myForm', // The redux-form instance identifier
-    rules: myInspectorRules, // An empty object by default
-    inspectorKey: 'myInspectorPropKey' // "inspection" by default
+    fieldsToProps, // An empty object by default
+    inspectorKey: 'myInspectorPropKey' // [optionnal] no "sub-prop" by default
 });
 ```
 
-#### rules
+#### fieldsToProps
 
-Rules are the most important part of `redux-form-inspector`. They are defined with a simple object with a prop name as key and a callback as value.
+`fieldsToProps` is the most important part of `redux-form-inspector`. It is defined as a simple object with a prop name as key and a callback as value. At runtime, each callback is executed with the form field values as argument and each result is assigned to the following prop name.
 
-At runtime, each callback are executed with the form field values as arguments and each result is assigned to the following prop name.
-
-The strength of the rules lies in fact they can be easily tested.
+The strength of `fieldsToProps` lies in fact it can be easily tested.
 
 #### form
 
 The form name must be the same as the name you have passed to the [reduxForm](http://redux-form.com/6.7.0/docs/api/ReduxForm.md/) on the form that you're inspect. In the previous example, the form name was `hello`.
 
+If the provided form name does not exist or is not registred by `redux-form`, each value of the resulting `fieldsToProps` object will be equal to `null`.
+
 #### inspectorKey [optionnal]
 
-This attribute let you assign a custom name to the inspector result object which is passed as prop to your inspected component.
+This attribute let you assign a custom root key for your `fieldsToProps` result object.
 
-If not specified, `formInspector` will use `inspection` as name for this prop.
+If not specified, `formInspector` will merge the `fieldsToProps` result object inside your existing component props.
 
 ## Contributing
 

@@ -1,7 +1,9 @@
 language: node_js
 
 node_js:
-    - "7.7.2"
+    - "6"
+    - "7"
+    - "node"
 
 env:
     global:
@@ -10,12 +12,8 @@ env:
 dist: trusty
 
 cache:
-    yarn: true
     directories:
         - node_modules
-
-before_install:
-    - npm install -g yarn
 
 install:
     - "make --silent install"
