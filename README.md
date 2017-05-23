@@ -1,5 +1,7 @@
 # redux-form-inspector
 
+[![Build Status](https://travis-ci.org/marmelab/redux-form-inspector.svg?branch=master)](https://travis-ci.org/marmelab/redux-form-inspector)
+
 An HOC for computing dynamic props from values inside an existing [redux-form](https://github.com/erikras/redux-form) component.
 
 - [Installation](#installation)
@@ -68,7 +70,7 @@ export default compose(
 
 ## API
 
-The `formInspector` function take a configuration object of the following form as input. In result of this call, it return a new HOC which can be used on any component (not even form).
+The `formInspector` function take a configuration object of the following form as input. In result of this call, it return a new HOC which can be used on any component (not just form).
 
 ```js
 const fieldsToProps = {
@@ -83,17 +85,17 @@ const myCustomFormInspector = formInspector({
 });
 ```
 
-#### fieldsToProps
-
-`fieldsToProps` is the most important part of `redux-form-inspector`. It is defined as a simple object with a prop name as key and a callback as value. At runtime, each callback is executed with the form field values as argument and each result is assigned to the following prop name.
-
-The strength of `fieldsToProps` lies in fact it can be easily tested.
-
 #### form
 
 The form name must be the same as the name you have passed to the [reduxForm](http://redux-form.com/6.7.0/docs/api/ReduxForm.md/) on the form that you're inspect. In the previous example, the form name was `hello`.
 
 If the provided form name does not exist or is not registred by `redux-form`, each value of the resulting `fieldsToProps` object will be equal to `null`.
+
+#### fieldsToProps
+
+`fieldsToProps` is the most important part of `redux-form-inspector`. It is defined as a simple object with a prop name as key and a callback as value. At runtime, each callback is executed with the form field values as argument and each result is assigned to the following prop name.
+
+The strength of `fieldsToProps` lies in the fact that it can be easily tested.
 
 #### inspectorKey [optionnal]
 
