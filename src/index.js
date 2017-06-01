@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { getFormValues } from 'redux-form';
+import { getFormAsyncErrors, getFormSyncErrors, getFormValues } from 'redux-form';
 
 export default ({ form, fieldsToProps = {}, inspectorKey }) => {
     if (!form) {
@@ -9,10 +9,14 @@ export default ({ form, fieldsToProps = {}, inspectorKey }) => {
     const FormInspectorComponent = BaseComponent => (
         connect((state) => {
             const fieldValues = getFormValues(form)(state);
+            const errors = {
+                ...getFormAsyncErrors(form)(state),
+                ...getFormSyncErrors(form)(state),
+            };
 
             const inspection = Object.keys(fieldsToProps).reduce((r, prop) => ({
                 ...r,
-                [prop]: fieldValues ? fieldsToProps[prop](fieldValues) : null,
+                [prop]: fieldValues ? fieldsToProps[prop](fieldValues, errors) : null,
             }), {});
 
             return !inspectorKey ? inspection : { [inspectorKey]: inspection };
