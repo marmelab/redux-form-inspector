@@ -40,7 +40,7 @@ export const HelloForm = ({ handleSubmit }) => (
 export default reduxForm({ form: 'hello' })(HelloForm);
 ```
 
-`redux-form-inspector` let you add some `dynamic props` to you component (wrapped by your HOC) who are based on the values `of any registred form` of your application. For example, you can disable fields, change the background color of your form, ... the sky is the limit.
+`redux-form-inspector` let you add some `dynamic props` to you component (wrapped by your HOC) who are based on the values `of any registered form` of your application. For example, you can disable fields, change the background color of your form, ... the sky is the limit.
 
 ```js
 import React from 'react';
@@ -74,7 +74,7 @@ The `formInspector` function take a configuration object of the following form a
 
 ```js
 const fieldsToProps = {
-    mySubprop: (fields) => { ... },
+    mySubprop: (fields, errors) => { ... },
     ...
 };
 
@@ -93,7 +93,7 @@ If the provided form name does not exist or is not registred by `redux-form`, ea
 
 #### fieldsToProps
 
-`fieldsToProps` is the most important part of `redux-form-inspector`. It is defined as a simple object with a prop name as key and a callback as value. At runtime, each callback is executed with the form field values as argument and each result is assigned to the following prop name.
+`fieldsToProps` is the most important part of `redux-form-inspector`. It is defined as a simple object with a prop name as key and a callback as value. At runtime, each callback is executed with the form field values and errors (both sync and async) as arguments. Each result is assigned to the following prop name.
 
 The strength of `fieldsToProps` lies in the fact that it can be easily tested.
 
