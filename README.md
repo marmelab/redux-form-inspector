@@ -58,7 +58,7 @@ export const HelloForm = ({ handleSubmit, backgroundColor, showSecret }) => (
 );
 
 export const fieldsToProps = {
-    backgroundColor: ({ message }) ? message.includes('hello') ? 'red' : 'blue',
+    backgroundColor: ({ message }) => message.includes('hello') ? 'red' : 'blue',
     showSecret: ({ message, email }) => message.length > 0 && email === 'john@doe.com'
 };
 
