@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { shallow } from 'enzyme';
-import expect from 'expect';
 
 import { reduxForm } from 'redux-form';
 import { createStore } from 'redux';
@@ -86,7 +85,7 @@ describe('formInspector', () => {
     });
 
     it('should access form fields values and (a)sync errors from inspector callback', () => {
-        const inspectorSpy = expect.createSpy();
+        const inspectorSpy = jest.fn();
 
         const InspectedComponent = formInspector({
             form: 'myForm',
@@ -113,7 +112,7 @@ describe('formInspector', () => {
             }),
         );
 
-        expect(inspectorSpy.calls[0].arguments).toEqual([
+        expect(inspectorSpy.mock.calls[0]).toEqual([
             {
                 myFieldKey: 'myFieldData',
                 myFieldKey2: 'myFieldData2',
