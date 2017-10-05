@@ -3,10 +3,11 @@
     "extends": "eslint-config-airbnb",
     "env": {
         "es6": true,
-        "mocha": true
+        "jest/globals": true
     },
     "plugins": [
-        "react"
+        "react",
+        "jest"
     ],
     "rules": {
         "indent": [
