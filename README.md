@@ -110,3 +110,12 @@ Run the tests with this command:
 ```sh
 make test
 ```
+
+## Maintainer
+
+[![jdemangeon](https://avatars1.githubusercontent.com/u/1064780?s=96&amp;v=4)](https://github.com/jdemangeon)     
+[Julien Demangeon](https://github.com/jdemangeon)  
+
+## License
+
+redux-form-inspector is licensed under the [MIT License](LICENSE), courtesy of [Marmelab](http://marmelab.com).
